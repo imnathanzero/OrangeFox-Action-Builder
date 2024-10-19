@@ -85,7 +85,21 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}
         rm -rf ./external/gflags
-        git clone --depth=1 https://android.googlesource.com/platform/external/gflags -b android-11.0.0_r48 ./external/gflags
+        local repo_url="https://android.googlesource.com/platform/external/gflags"
+        local clone_dir="./external/gflags"
+        case ${{ inputs.MANIFEST_BRANCH }} in
+        "11.0")
+            echo "Clone Snapuserd Dependencies for Android 11.0..."
+            git clone --depth=1 "$repo_url" -b android-11.0.0_r48 "$clone_dir"
+            ;;
+        "12.1")
+            echo "Clone Snapuserd Dependencies for Android 12.1..."
+            git clone --depth=1 "$repo_url" -b android-12.1.0_r27 "$clone_dir"
+            ;;
+        *)
+            echo "Unsupported target branch: $target_branch"
+            echo "Please specify either '11.0' or '12.1'."
+            exit 1
         
     - name: Clone Device Tree
       run: |
